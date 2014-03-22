@@ -1,0 +1,28 @@
+{
+  "name": "express-sslify",
+  "version": "0.0.1",
+  "description": "Enforces SSL for node.js express projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/florianheinemann/express-sslify.git"
+  },
+  "keywords": [
+    "express",
+    "node.js",
+    "node",
+    "ssl",
+    "sslify",
+    "http",
+    "redirect"
+  ],
+  "author": "Florian Heinemann <florian.heinemann@gmail.com> (http://twitter.com/florian__h)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/florianheinemann/express-sslify/issues"
+  },
+  "homepage": "https://github.com/florianheinemann/express-sslify"
+}
