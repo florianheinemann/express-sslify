@@ -1,6 +1,6 @@
 {
   "name": "express-sslify",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Enforces SSL for node.js express projects",
   "main": "index.js",
   "scripts": {
