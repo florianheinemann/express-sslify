@@ -36,6 +36,6 @@ Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL en
 Please do *not* set this flag if you are not behind a proxy that is setting this flag as such flags can be easily spoofed in a direct client/server connection.
 
 ### Credits and License
-express-sslify is licensed under the MIT license. If you'd like to be informed about new projects follow me on  [@TheSumOfAll](http://twitter.com/TheSumOfAll/).
+express-sslify is licensed under the MIT license. If you'd like to be informed about new projects follow  [@TheSumOfAll](http://twitter.com/TheSumOfAll/).
 
 Copyright (c) 2013-2014 Florian Heinemann
