@@ -1,6 +1,6 @@
 "use strict";
 
-var enforceHTTPS = function(trustProxy) {
+var enforceHTTPS = function(trustProtoHeader, trustAzureHeader) {
 	return function(req, res, next) {
 
 		// First, check if directly requested via https
@@ -8,8 +8,14 @@ var enforceHTTPS = function(trustProxy) {
 
 		// Second, if the request headers can be trusted (e.g. because they are send
 		// by a proxy), check if x-forward-proto is set to https
-		if(!isHttps && trustProxy) {
+		if(!isHttps && trustProtoHeader) {
 			isHttps = (req.headers["x-forwarded-proto"] === "https");
+		} 
+
+		// Third, if trustAzureHeader is set, check for Azure's headers 
+		// indicating a SSL connection
+		if(!isHttps && trustAzureHeader && req.headers["x-arr-ssl"]) {
+			isHttps = true;
 		}
 
 		if(isHttps) {

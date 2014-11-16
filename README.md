@@ -35,6 +35,19 @@ Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL en
 
 Please do *not* set this flag if you are not behind a proxy that is setting this flag as such flags can be easily spoofed in a direct client/server connection.
 
+### Azure support
+
+Azure has a slightly different way of signaling encrypted connections. To tell express-sslify to look out for Azure's x-arr-ssl header do the following:
+
+`app.use(enforce.HTTPS(false, true))`
+
+Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
+
+
+## Tests
+Download the whole repository and call:
+`$ npm install && npm test`
+
 ### Credits and License
 express-sslify is licensed under the MIT license. If you'd like to be informed about new projects follow  [@TheSumOfAll](http://twitter.com/TheSumOfAll/).
 
