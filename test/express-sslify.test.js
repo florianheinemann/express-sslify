@@ -12,12 +12,12 @@ describe('express-sslify', function() {
 
 		app.get('/non-ssl',
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		app.post('/non-ssl-post',
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		var agent = request.agent(app);
@@ -43,12 +43,12 @@ describe('express-sslify', function() {
 
 		app.get('/ssl',
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		app.post('/ssl-post',
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		var agent = request.agent(app);
@@ -73,12 +73,12 @@ describe('express-sslify', function() {
 
 		app.get('/ssl', enforce.HTTPS(),
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		app.get('/ssl-behind-proxy', enforce.HTTPS(true),
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		var agent = request.agent(app);
@@ -120,12 +120,12 @@ describe('express-sslify', function() {
 
 		app.get('/ssl', enforce.HTTPS(),
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		app.get('/ssl-behind-azure', enforce.HTTPS(false, true),
 			function(req, res){
-				res.send(200, 'ok');
+				res.status(200).send('ok');
 		});
 
 		var agent = request.agent(app);
