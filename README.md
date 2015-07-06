@@ -46,7 +46,7 @@ Please do *not* set this flag if you are not behind an Azure proxy as this flag 
 
 ## Tests
 Download the whole repository and call:
-`$ npm install && npm test`
+`$ npm install; npm test`
 
 ### Credits and License
 express-sslify is licensed under the MIT license. If you'd like to be informed about new projects follow  [@TheSumOfAll](http://twitter.com/TheSumOfAll/).
