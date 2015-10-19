@@ -76,7 +76,7 @@ describe('express-sslify', function() {
 				res.status(200).send('ok');
 		});
 
-		app.get('/ssl-behind-proxy', enforce.HTTPS(true),
+		app.get('/ssl-behind-proxy', enforce.HTTPS({ trustProtoHeader: true }),
 			function(req, res){
 				res.status(200).send('ok');
 		});
@@ -123,7 +123,7 @@ describe('express-sslify', function() {
 				res.status(200).send('ok');
 		});
 
-		app.get('/ssl-behind-azure', enforce.HTTPS(false, true),
+		app.get('/ssl-behind-azure', enforce.HTTPS({trustAzureHeader: true}),
 			function(req, res){
 				res.status(200).send('ok');
 		});

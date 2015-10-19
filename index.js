@@ -1,20 +1,51 @@
 "use strict";
 
-var enforceHTTPS = function(trustProtoHeader, trustAzureHeader) {
+var defaults = {
+	trustProtoHeader: false,
+	trustAzureHeader: false
+};
+
+/**
+ * Apply options
+ *
+ * @param {Hash} options
+ * @return {Hash}
+ * @api private
+ */
+function applyOptions(options) {
+	var settings = {};
+	options = options || {};
+
+	for (var option in defaults) {
+		settings[option] = options[option] || defaults[option];
+	}
+	return settings;
+}
+
+/**
+ * enforceHTTPS
+ *
+ * @param {Hash} options
+ * @param {Boolean} options[trustProtoHeader]
+ * @param {Boolean} options[trustAzureHeader]
+ * @api public
+ */
+var enforceHTTPS = function(options) {
 	return function(req, res, next) {
+		options = applyOptions(options);
 
 		// First, check if directly requested via https
 		var isHttps = req.secure;
 
 		// Second, if the request headers can be trusted (e.g. because they are send
 		// by a proxy), check if x-forward-proto is set to https
-		if(!isHttps && trustProtoHeader) {
+		if(!isHttps && options.trustProtoHeader) {
 			isHttps = (req.headers["x-forwarded-proto"] === "https");
 		}
 
 		// Third, if trustAzureHeader is set, check for Azure's headers
 		// indicating a SSL connection
-		if(!isHttps && trustAzureHeader && req.headers["x-arr-ssl"]) {
+		if(!isHttps && options.trustAzureHeader && req.headers["x-arr-ssl"]) {
 			isHttps = true;
 		}
 
@@ -28,7 +59,7 @@ var enforceHTTPS = function(trustProtoHeader, trustAzureHeader) {
 				res.status(403).send("Please use HTTPS when submitting data to this server.");
 			}
 		}
-	}
+	};
 };
 
 exports.HTTPS = enforceHTTPS;
