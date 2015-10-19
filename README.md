@@ -31,7 +31,7 @@ http.createServer(app).listen(app.get('port'), function() {
 
 Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL endpoints but then forward unencrypted HTTP traffic to the website. This makes it difficult to detect if the original request was indeed via HTTPS. Luckily, most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme. express-sslify is ready for such scenarios, but you have to specifically request the evaluation of this flag:
 
-`app.use(enforce.HTTPS(true))`
+`app.use(enforce.HTTPS({ trustProtoHeader: true }))`
 
 Please do *not* set this flag if you are not behind a proxy that is setting this flag as such flags can be easily spoofed in a direct client/server connection.
 
@@ -39,7 +39,7 @@ Please do *not* set this flag if you are not behind a proxy that is setting this
 
 Azure has a slightly different way of signaling encrypted connections. To tell express-sslify to look out for Azure's x-arr-ssl header do the following:
 
-`app.use(enforce.HTTPS(false, true))`
+`app.use(enforce.HTTPS({ trustAmazonHeader: true }))`
 
 Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
 
