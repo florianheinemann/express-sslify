@@ -1,3 +1,7 @@
+# 1.0.0 - Oct 24 2015
+- BREAKING change of arguments to named arg. - check README
+- UPDATE documentation
+
 # 0.1.2 - Jul 06 2015
 - UPDATE dependencies
 - BUMP package version

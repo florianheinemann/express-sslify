@@ -76,7 +76,7 @@ describe('express-sslify', function() {
 				res.status(200).send('ok');
 		});
 
-		app.get('/ssl-behind-proxy', enforce.HTTPS(true),
+		app.get('/ssl-behind-proxy', enforce.HTTPS({ trustProtoHeader: true }),
 			function(req, res){
 				res.status(200).send('ok');
 		});
@@ -123,7 +123,7 @@ describe('express-sslify', function() {
 				res.status(200).send('ok');
 		});
 
-		app.get('/ssl-behind-azure', enforce.HTTPS(false, true),
+		app.get('/ssl-behind-azure', enforce.HTTPS({trustAzureHeader: true}),
 			function(req, res){
 				res.status(200).send('ok');
 		});
@@ -158,6 +158,25 @@ describe('express-sslify', function() {
       			.set('x-forwarded-proto', 'https')
 				.expect(301)
 				.expect('location', new RegExp('^https://[\\S]*/ssl-behind-azure$'), done);
+		})
+	})
+
+	describe('Pre-1.0.0-style arguments', function() {
+
+		var app = express();
+
+		app.get('/ssl', enforce.HTTPS(true),
+			function(req, res){
+				res.status(200).send('ok');
+		});
+
+		var agent = request.agent(app);
+
+		it('should crash', function (done) {
+			agent
+				.get('/ssl')
+      			.set('x-forwarded-proto', 'https')
+				.expect(500, done);
 		})
 	})
 })
