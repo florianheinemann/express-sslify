@@ -160,4 +160,23 @@ describe('express-sslify', function() {
 				.expect('location', new RegExp('^https://[\\S]*/ssl-behind-azure$'), done);
 		})
 	})
+
+	describe('Pre-1.0.0-style arguments', function() {
+
+		var app = express();
+
+		app.get('/ssl', enforce.HTTPS(true),
+			function(req, res){
+				res.status(200).send('ok');
+		});
+
+		var agent = request.agent(app);
+
+		it('should crash', function (done) {
+			agent
+				.get('/ssl')
+      			.set('x-forwarded-proto', 'https')
+				.expect(500, done);
+		})
+	})
 })

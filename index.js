@@ -32,6 +32,11 @@ function applyOptions(options) {
  */
 var enforceHTTPS = function(options) {
 	return function(req, res, next) {
+		// Crash on pre-1.0.0-style arguments
+		if(typeof options === 'boolean') {
+			return next("express-sslify has changed the way how arguments are treated. Please check the readme.");
+		}
+
 		options = applyOptions(options);
 
 		// First, check if directly requested via https

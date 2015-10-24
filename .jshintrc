@@ -1,9 +1,0 @@
-{
-	"predef": [
-	"require",
-		"module",
-		"exports"
-	],
-	"undef": true,
-	"unused": true
-}
