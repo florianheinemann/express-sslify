@@ -1,7 +1,7 @@
 express-sslify
 ==============
 
-This simple module enforces HTTPS connections on any incoming requests. In case of a non-encrypted HTTP request, express-sslify automatically redirects to an HTTPS address using a 301 permanent redirect.
+This simple module enforces HTTPS connections on any incoming GET and HEAD requests. In case of a non-encrypted HTTP request, express-sslify automatically redirects to an HTTPS address using a 301 permanent redirect.
 
 express-sslify also works behind reverse proxies (load balancers) as they are for example used by Heroku and nodejitsu. In such cases, however, the `trustProxy` parameter has to be set (see below)
 
