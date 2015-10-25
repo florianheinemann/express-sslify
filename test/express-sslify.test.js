@@ -15,6 +15,11 @@ describe('express-sslify', function() {
 				res.status(200).send('ok');
 		});
 
+		app.head('/non-ssl-head',
+			function(req, res){
+				res.status(200).send();
+		});
+
 		app.post('/non-ssl-post',
 			function(req, res){
 				res.status(200).send('ok');
@@ -26,6 +31,12 @@ describe('express-sslify', function() {
 			agent
 				.get('/non-ssl')
 				.expect(200, 'ok', done);
+		})
+
+		it('should accept non-ssl HEAD requests', function (done) {
+			agent
+				.head('/non-ssl-head')
+				.expect(200, done);
 		})
 
 		it('should accept non-ssl POST requests', function (done) {
@@ -46,6 +57,11 @@ describe('express-sslify', function() {
 				res.status(200).send('ok');
 		});
 
+		app.head('/ssl-head',
+			function(req, res){
+				res.status(200).send();
+		});
+
 		app.post('/ssl-post',
 			function(req, res){
 				res.status(200).send('ok');
@@ -60,6 +76,13 @@ describe('express-sslify', function() {
 				.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
 		})
 
+		it('should redirect non-SSL HEAD requests to HTTPS', function (done) {
+			agent
+				.head('/ssl-head')
+				.expect(301)
+				.expect('location', new RegExp('^https://[\\S]*/ssl-head$'), done);
+		})
+
 		it('should send error for non-SSL POST requests', function (done) {
 			agent
 				.post('/non-ssl-post')
@@ -69,96 +92,114 @@ describe('express-sslify', function() {
 
 	describe('Heroku-style proxy SSL flag', function() {
 
-		var app = express();
+		var proxyTests = function(method) {
 
-		app.get('/ssl', enforce.HTTPS(),
-			function(req, res){
-				res.status(200).send('ok');
-		});
+			var app = express();
 
-		app.get('/ssl-behind-proxy', enforce.HTTPS({ trustProtoHeader: true }),
-			function(req, res){
-				res.status(200).send('ok');
-		});
+			app[method]('/ssl', enforce.HTTPS(),
+				function(req, res){
+					res.status(200).send();
+			});
 
-		var agent = request.agent(app);
+			app[method]('/ssl-behind-proxy', enforce.HTTPS({ trustProtoHeader: true }),
+				function(req, res){
+					res.status(200).send();
+			});
 
-		it('should ignore x-forwarded-proto if not activated', function (done) {
-			agent
-				.get('/ssl')
-      			.set('x-forwarded-proto', 'https')
-				.expect(301)
-				.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
-		})
+			var agent = request.agent(app);
 
-		it('should accept request if flag set and activated', function (done) {
-			agent
-				.get('/ssl-behind-proxy')
-      			.set('x-forwarded-proto', 'https')
-				.expect(200, 'ok', done);
-		})
+			it('should ignore x-forwarded-proto if not activated (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl')
+	      			.set('x-forwarded-proto', 'https')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
+			})
 
-		it('should redirect if activated but flag not set', function (done) {
-			agent
-				.get('/ssl-behind-proxy')
-				.expect(301)
-				.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
-		})
+			it('should accept request if flag set and activated (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+	      			.set('x-forwarded-proto', 'https')
+					.expect(200, done);
+			})
 
-		it('should redirect if activated but wrong flag set', function (done) {
-			agent
-				.get('/ssl-behind-proxy')
-      			.set('x-arr-ssl', 'https')
-				.expect(301)
-				.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
-		})
+			it('should redirect if activated but flag not set (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
+			})
+
+			it('should redirect if activated but wrong flag set (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+	      			.set('x-arr-ssl', 'https')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
+			})
+		}
+
+		// Test GET requests
+		proxyTests('get');
+
+		// Test HEAD requests
+		proxyTests('head');
 	})
 
 	describe('Azure-style proxy SSL flag', function() {
 
-		var app = express();
+		var proxyTests = function(method) {
 
-		app.get('/ssl', enforce.HTTPS(),
-			function(req, res){
-				res.status(200).send('ok');
-		});
+			var app = express();
 
-		app.get('/ssl-behind-azure', enforce.HTTPS({trustAzureHeader: true}),
-			function(req, res){
-				res.status(200).send('ok');
-		});
+			app[method]('/ssl', enforce.HTTPS(),
+				function(req, res){
+					res.status(200).send();
+			});
 
-		var agent = request.agent(app);
+			app[method]('/ssl-behind-azure', enforce.HTTPS({trustAzureHeader: true}),
+				function(req, res){
+					res.status(200).send();
+			});
 
-		it('should ignore x-arr-ssl if not activated', function (done) {
-			agent
-				.get('/ssl')
-      			.set('x-arr-ssl', 'https')
-				.expect(301)
-				.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
-		})
+			var agent = request.agent(app);
 
-		it('should accept request if flag set and activated', function (done) {
-			agent
-				.get('/ssl-behind-azure')
-      			.set('x-arr-ssl', 'https')
-				.expect(200, 'ok', done);
-		})
+			it('should ignore x-arr-ssl if not activated (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl')
+	      			.set('x-arr-ssl', 'https')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
+			})
 
-		it('should redirect if activated but flag not set', function (done) {
-			agent
-				.get('/ssl-behind-azure')
-				.expect(301)
-				.expect('location', new RegExp('^https://[\\S]*/ssl-behind-azure$'), done);
-		})
+			it('should accept request if flag set and activated (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-azure')
+	      			.set('x-arr-ssl', 'https')
+					.expect(200, done);
+			})
 
-		it('should redirect if activated but wrong flag set', function (done) {
-			agent
-				.get('/ssl-behind-azure')
-      			.set('x-forwarded-proto', 'https')
-				.expect(301)
-				.expect('location', new RegExp('^https://[\\S]*/ssl-behind-azure$'), done);
-		})
+			it('should redirect if activated but flag not set (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-azure')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-azure$'), done);
+			})
+
+			it('should redirect if activated but wrong flag set (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-azure')
+	      			.set('x-forwarded-proto', 'https')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-azure$'), done);
+			})
+		}
+
+		// Test GET requests
+		proxyTests('get');
+
+		// Test HEAD requests
+		proxyTests('head');
 	})
 
 	describe('Pre-1.0.0-style arguments', function() {
