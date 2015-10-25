@@ -39,7 +39,7 @@ Please do *not* set this flag if you are not behind a proxy that is setting this
 
 Azure has a slightly different way of signaling encrypted connections. To tell express-sslify to look out for Azure's x-arr-ssl header do the following:
 
-`app.use(enforce.HTTPS({ trustAmazonHeader: true }))`
+`app.use(enforce.HTTPS({ trustAzureHeader: true }))`
 
 Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
 
