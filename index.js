@@ -58,7 +58,7 @@ var enforceHTTPS = function(options) {
 			next();
 		} else {
 			// Only redirect GET methods
-			if(req.method === "GET") {
+			if(req.method === "GET" || req.method === 'HEAD') {
 				res.redirect(301, "https://" + req.headers.host + req.originalUrl);
 			} else {
 				res.status(403).send("Please use HTTPS when submitting data to this server.");

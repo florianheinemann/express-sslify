@@ -1,3 +1,6 @@
+# 1.0.1 - Oct 25 2015
+- ADD redirects for HEAD requests
+
 # 1.0.0 - Oct 24 2015
 - BREAKING change of arguments to named arg. - check README
 - UPDATE documentation
