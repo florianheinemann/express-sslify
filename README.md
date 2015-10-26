@@ -19,7 +19,8 @@ var enforce = require('express-sslify');
 
 var app = express();
 
-// use HTTPS(true) in case you are behind a load balancer (e.g. Heroku)
+// Use enforce.HTTPS({ trustProtoHeader: true }) in case you are behind
+// a load balancer (e.g. Heroku). See further comments below
 app.use(enforce.HTTPS());
 
 http.createServer(app).listen(app.get('port'), function() {
