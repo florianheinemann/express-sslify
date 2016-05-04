@@ -202,6 +202,20 @@ describe('express-sslify', function() {
 		proxyTests('head');
 	})
 
+	describe('Custom SSL Port', function () {
+
+		it('should redirect to specified port', function (done) {
+			var app = express();
+
+			app.use(enforce.HTTPS({ port: 3001 }));
+
+			request.agent(app)
+				.get('/ssl')
+				.expect(301)
+				.expect('location', new RegExp('^https://[\\S]*\:3001/ssl$'), done);
+		});
+	});
+
 	describe('Pre-1.0.0-style arguments', function() {
 
 		var app = express();
