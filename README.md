@@ -44,6 +44,14 @@ Azure has a slightly different way of signaling encrypted connections. To tell e
 
 Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
 
+### Custom SSL Port
+
+Specify on which SSL port should connections be redirected by setting `port` in options.
+
+`app.use(enforce.HTTPS({ port: 3001 }))`
+
+This will redirect requests for example from `http://foo.bar:3000/baz` to `https://foo.bar:3001/baz`.
+
 
 ## Tests
 Download the whole repository and call:
