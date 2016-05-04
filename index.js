@@ -1,6 +1,9 @@
 "use strict";
 
+var url = require('url');
+
 var defaults = {
+	port: null,
 	trustProtoHeader: false,
 	trustAzureHeader: false
 };
@@ -26,6 +29,7 @@ function applyOptions(options) {
  * enforceHTTPS
  *
  * @param {Hash} options
+ * @param {Number} options[port]
  * @param {Boolean} options[trustProtoHeader]
  * @param {Boolean} options[trustAzureHeader]
  * @api public
@@ -59,7 +63,16 @@ var enforceHTTPS = function(options) {
 		} else {
 			// Only redirect GET methods
 			if(req.method === "GET" || req.method === 'HEAD') {
-				res.redirect(301, "https://" + req.headers.host + req.originalUrl);
+				var hostname = url.parse('http://' + req.headers.host).hostname;
+
+				var redirectUrl
+				if (options.port != null) {
+					redirectUrl = "https://" + hostname + ':' + options.port + req.url
+				} else {
+					redirectUrl = "https://" + hostname + req.url;
+				}
+
+				res.redirect(301, redirectUrl);
 			} else {
 				res.status(403).send("Please use HTTPS when submitting data to this server.");
 			}
