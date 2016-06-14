@@ -123,6 +123,13 @@ describe('express-sslify', function() {
 					.expect(200, done);
 			})
 
+			it('should accept request if flag set and activated (' + method.toUpperCase() + ') with comma separated list', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+					.set('x-forwarded-proto', 'https, http')
+					.expect(200, done);
+			})
+
 			it('should redirect if activated but flag not set (' + method.toUpperCase() + ')', function (done) {
 				agent
 					[method]('/ssl-behind-proxy')
@@ -176,6 +183,13 @@ describe('express-sslify', function() {
 				agent
 					[method]('/ssl-behind-azure')
 	      			.set('x-arr-ssl', 'https')
+					.expect(200, done);
+			})
+
+			it('should accept request if flag set and activated (' + method.toUpperCase() + ') with a comma separated list', function (done) {
+				agent
+					[method]('/ssl-behind-azure')
+					.set('x-arr-ssl', 'https, http')
 					.expect(200, done);
 			})
 

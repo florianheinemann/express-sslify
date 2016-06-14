@@ -45,7 +45,7 @@ var enforceHTTPS = function(options) {
 		// Second, if the request headers can be trusted (e.g. because they are send
 		// by a proxy), check if x-forward-proto is set to https
 		if(!isHttps && options.trustProtoHeader) {
-			isHttps = (req.headers["x-forwarded-proto"] === "https");
+			isHttps = ((req.headers["x-forwarded-proto"] || '').match(/^https,?/));
 		}
 
 		// Third, if trustAzureHeader is set, check for Azure's headers
