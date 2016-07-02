@@ -123,11 +123,42 @@ describe('express-sslify', function() {
 					.expect(200, done);
 			})
 
-			it('should accept request if flag set and activated (' + method.toUpperCase() + ') with comma separated list', function (done) {
+			it('should accept request if flag set and activated (' + method.toUpperCase() + ') with comma/space separated list', function (done) {
 				agent
 					[method]('/ssl-behind-proxy')
 					.set('x-forwarded-proto', 'https, http')
 					.expect(200, done);
+			})
+
+			it('should accept request if flag set and activated (' + method.toUpperCase() + ') with comma separated list', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+					.set('x-forwarded-proto', 'https,http')
+					.expect(200, done);
+			})
+
+			it('should redirect if activated but flag not set with https (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+					.set('x-forwarded-proto', '')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
+			})
+
+			it('should redirect if activated but flag only set with HTTP (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+					.set('x-forwarded-proto', 'http')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
+			})
+
+			it('should redirect if activated but header indicates that first hop was not HTTPS (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-behind-proxy')
+					.set('x-forwarded-proto', 'http, https')
+					.expect(301)
+					.expect('location', new RegExp('^https://[\\S]*/ssl-behind-proxy$'), done);
 			})
 
 			it('should redirect if activated but flag not set (' + method.toUpperCase() + ')', function (done) {
@@ -159,6 +190,8 @@ describe('express-sslify', function() {
 
 			var app = express();
 
+			var xArrSslContent = '2048|128|DC=com, DC=microsoft, DC=corp, DC=redmond, CN=MSIT Machine Auth CA 2|C=US, S=WA, L=Redmond, O=Microsoft, OU=OrganizationName, CN=*.azurewebsites.net';
+
 			app[method]('/ssl', enforce.HTTPS(),
 				function(req, res){
 					res.status(200).send();
@@ -174,7 +207,7 @@ describe('express-sslify', function() {
 			it('should ignore x-arr-ssl if not activated (' + method.toUpperCase() + ')', function (done) {
 				agent
 					[method]('/ssl')
-	      			.set('x-arr-ssl', 'https')
+	      			.set('x-arr-ssl', xArrSslContent)
 					.expect(301)
 					.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
 			})
@@ -182,14 +215,7 @@ describe('express-sslify', function() {
 			it('should accept request if flag set and activated (' + method.toUpperCase() + ')', function (done) {
 				agent
 					[method]('/ssl-behind-azure')
-	      			.set('x-arr-ssl', 'https')
-					.expect(200, done);
-			})
-
-			it('should accept request if flag set and activated (' + method.toUpperCase() + ') with a comma separated list', function (done) {
-				agent
-					[method]('/ssl-behind-azure')
-					.set('x-arr-ssl', 'https, http')
+	      			.set('x-arr-ssl', xArrSslContent)
 					.expect(200, done);
 			})
 

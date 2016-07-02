@@ -8,7 +8,7 @@ var defaults = {
 /**
  * Apply options
  *
- * @param {Hash} options
+ * @param {Hash} [options]
  * @return {Hash}
  * @api private
  */
@@ -25,9 +25,9 @@ function applyOptions(options) {
 /**
  * enforceHTTPS
  *
- * @param {Hash} options
- * @param {Boolean} options[trustProtoHeader]
- * @param {Boolean} options[trustAzureHeader]
+ * @param {Hash} [options]
+ * @param {Boolean} [options[trustProtoHeader]=false] - Set to true if the x-forwarded-proto HTTP header should be trusted (e.g. for typical reverse proxy configurations)
+ * @param {Boolean} [options[trustAzureHeader]=false] - Set to true if Azure's x-arr-ssl HTTP header should be trusted (only use in Azure environments)
  * @api public
  */
 var enforceHTTPS = function(options) {
@@ -45,7 +45,7 @@ var enforceHTTPS = function(options) {
 		// Second, if the request headers can be trusted (e.g. because they are send
 		// by a proxy), check if x-forward-proto is set to https
 		if(!isHttps && options.trustProtoHeader) {
-			isHttps = ((req.headers["x-forwarded-proto"] || '').match(/^https,?/));
+			isHttps = ((req.headers["x-forwarded-proto"] || '').substring(0,5) === 'https');
 		}
 
 		// Third, if trustAzureHeader is set, check for Azure's headers

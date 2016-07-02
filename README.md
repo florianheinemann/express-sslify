@@ -1,9 +1,9 @@
 express-sslify
 ==============
 
-This simple module enforces HTTPS connections on any incoming GET and HEAD requests. In case of a non-encrypted HTTP request, express-sslify automatically redirects to an HTTPS address using a 301 permanent redirect. Any other requests (e.g. POST) fail with a 403 error message.
+This simple module enforces HTTPS connections on any incoming GET and HEAD requests. In case of a non-encrypted HTTP request, express-sslify automatically redirects to an HTTPS address using a 301 permanent redirect. Any other type of request (e.g., POST) will fail with a 403 error message.
 
-express-sslify also works behind reverse proxies (load balancers) as they are for example used by Heroku and nodejitsu. In such cases, however, the `trustProxy` parameter has to be set (see below)
+express-sslify also works behind reverse proxies (load balancers) such as those used by Heroku or nodejitsu. In those cases, however, the `trustProtoHeader` parameter has to be set (see below)
 
 ### Usage
 
@@ -34,7 +34,7 @@ Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL en
 
 `app.use(enforce.HTTPS({ trustProtoHeader: true }))`
 
-Please do *not* set this flag if you are not behind a proxy that is setting this flag as such flags can be easily spoofed in a direct client/server connection.
+Please do *not* set this flag if you are not behind a proxy that is setting this flag. HTTP headers can be easily spoofed outside of environments that are actively setting/removing the header.
 
 ### Azure support
 
@@ -42,7 +42,7 @@ Azure has a slightly different way of signaling encrypted connections. To tell e
 
 `app.use(enforce.HTTPS({ trustAzureHeader: true }))`
 
-Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
+Please do *not* set this flag if you are not behind an Azure proxy as this flag can be easily spoofed outside of an Azure environment.
 
 
 ## Tests
@@ -52,4 +52,4 @@ Download the whole repository and call:
 ### Credits and License
 express-sslify is licensed under the MIT license. If you'd like to be informed about new projects follow  [@TheSumOfAll](http://twitter.com/TheSumOfAll/).
 
-Copyright (c) 2013-2014 Florian Heinemann
+Copyright (c) 2013-2016 Florian Heinemann

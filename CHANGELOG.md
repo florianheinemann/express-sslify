@@ -1,3 +1,8 @@
+# 1.1.0 - Jul 02 2016
+- ADD Support for 'x-forwarded-proto' headers that were appended by several proxies in the format 'https, http'
+- UPDATE Tests for Azure HTTPS to have more realistic content for the x-arr-ssl flag
+- UPDATE JSDoc and Readme
+
 # 1.0.1 - Oct 25 2015
 - ADD redirects for HEAD requests
 
