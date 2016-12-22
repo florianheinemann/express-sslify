@@ -2,7 +2,8 @@
 
 var defaults = {
 	trustProtoHeader: false,
-	trustAzureHeader: false
+	trustAzureHeader: false,
+	trustXForwardedHostHeader: false
 };
 
 /**
@@ -28,6 +29,7 @@ function applyOptions(options) {
  * @param {Hash} [options]
  * @param {Boolean} [options[trustProtoHeader]=false] - Set to true if the x-forwarded-proto HTTP header should be trusted (e.g. for typical reverse proxy configurations)
  * @param {Boolean} [options[trustAzureHeader]=false] - Set to true if Azure's x-arr-ssl HTTP header should be trusted (only use in Azure environments)
+ * @param {Boolean} [options[trustXForwardedHostHeader]=false] - Set to true if the x-forwarded-host HTTP header should be trusted
  * @api public
  */
 var enforceHTTPS = function(options) {
@@ -59,7 +61,8 @@ var enforceHTTPS = function(options) {
 		} else {
 			// Only redirect GET methods
 			if(req.method === "GET" || req.method === 'HEAD') {
-				res.redirect(301, "https://" + req.headers.host + req.originalUrl);
+				var host = options.trustXForwardedHostHeader ? (req.headers['x-forwarded-host'] || req.headers.host) : req.headers.host;
+				res.redirect(301, "https://" + host + req.originalUrl);
 			} else {
 				res.status(403).send("Please use HTTPS when submitting data to this server.");
 			}

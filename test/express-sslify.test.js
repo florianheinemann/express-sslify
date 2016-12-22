@@ -242,6 +242,69 @@ describe('express-sslify', function() {
 		proxyTests('head');
 	})
 
+	describe('X-Forwarded-Host redirects', function() {
+
+		var proxyTests = function(method) {
+
+			var app = express();
+
+			var xArrSslContent = '2048|128|DC=com, DC=microsoft, DC=corp, DC=redmond, CN=MSIT Machine Auth CA 2|C=US, S=WA, L=Redmond, O=Microsoft, OU=OrganizationName, CN=*.azurewebsites.net';
+
+			app[method]('/ssl', enforce.HTTPS(),
+				function(req, res){
+					res.status(200).send();
+			});
+
+			app[method]('/ssl-with-redirect-trusted', enforce.HTTPS({trustXForwardedHostHeader: true}),
+				function(req, res){
+					res.status(200).send();
+			});
+
+			var agent = request.agent(app);
+
+			it('should ignore x-forwarded-host if not activated (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl')
+	      			.set('x-forwarded-host', 'malicious')
+					.expect(301)
+					.expect(function(res) {
+						if(res.header.location.indexOf('malicious') != -1)
+							throw new Error('should not redirect')
+					})
+					.expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
+			})
+
+			it('should ignore x-forwarded-host if not set (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-with-redirect-trusted')
+					.expect(301)
+					.expect(function(res) {
+						if(res.header.location.indexOf('localhost') != -1 && res.header.location.indexOf('127.0.0.1') != -1)
+							throw new Error('should not redirect')
+					})
+					.expect('location', new RegExp('^https://[\\S]*/ssl-with-redirect-trusted$'), done);
+			})
+
+			it('should redirect if x-forwarded-host and flag is set (' + method.toUpperCase() + ')', function (done) {
+				agent
+					[method]('/ssl-with-redirect-trusted')
+	      			.set('x-forwarded-host', 'newhost123')
+					.expect(301)
+					.expect(function(res) {
+						if(res.header.location.indexOf('newhost123') === -1)
+							throw new Error('should redirect')
+					})
+					.expect('location', new RegExp('^https://[\\S]*/ssl-with-redirect-trusted$'), done);
+			})
+		}
+
+		// Test GET requests
+		proxyTests('get');
+
+		// Test HEAD requests
+		proxyTests('head');
+	})
+
 	describe('Pre-1.0.0-style arguments', function() {
 
 		var app = express();
