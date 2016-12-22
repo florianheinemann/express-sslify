@@ -2,7 +2,8 @@
 
 var defaults = {
 	trustProtoHeader: false,
-	trustAzureHeader: false
+	trustAzureHeader: false,
+	trustXForwardedHostHeader: false
 };
 
 /**
@@ -59,7 +60,7 @@ var enforceHTTPS = function(options) {
 		} else {
 			// Only redirect GET methods
 			if(req.method === "GET" || req.method === 'HEAD') {
-				var host = req.headers['x-forwarded-host'] || req.headers.host;
+				var host = options.trustXForwardedHostHeader ? (req.headers['x-forwarded-host'] || req.headers.host) : req.headers.host;
 				res.redirect(301, "https://" + host + req.originalUrl);
 			} else {
 				res.status(403).send("Please use HTTPS when submitting data to this server.");

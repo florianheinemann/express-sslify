@@ -44,6 +44,11 @@ Azure has a slightly different way of signaling encrypted connections. To tell e
 
 Please do *not* set this flag if you are not behind an Azure proxy as this flag can be easily spoofed outside of an Azure environment.
 
+### X-Forwarded-Host header support
+
+If your reverse proxy sends the original host using the `X-Forwarded-Host` header and you need to use that instead of the `Host` header for the redirect, use the `trustXForwardedHostHeader` flag:
+
+`app.use(enforce.HTTPS({ trustXForwardedHostHeader: true }))`
 
 ## Tests
 Download the whole repository and call:
