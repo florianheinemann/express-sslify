@@ -1,3 +1,6 @@
+# 1.2.0 - Dec 22 2016
+- ADD Support for 'x-forwarded-host' headers to indicate to which host requests should be redirected
+
 # 1.1.0 - Jul 02 2016
 - ADD Support for 'x-forwarded-proto' headers that were appended by several proxies in the format 'https, http'
 - UPDATE Tests for Azure HTTPS to have more realistic content for the x-arr-ssl flag
