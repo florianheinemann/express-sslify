@@ -32,7 +32,9 @@ http.createServer(app).listen(app.get('port'), function() {
 
 Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL endpoints but then forward unencrypted HTTP traffic to the website. This makes it difficult to detect if the original request was indeed via HTTPS. Luckily, most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme. express-sslify is ready for such scenarios, but you have to specifically request the evaluation of this flag:
 
-`app.use(enforce.HTTPS({ trustProtoHeader: true }))`
+```javascript
+app.use(enforce.HTTPS({ trustProtoHeader: true }))
+```
 
 Please do *not* set this flag if you are not behind a proxy that is setting this flag. HTTP headers can be easily spoofed outside of environments that are actively setting/removing the header.
 
@@ -40,7 +42,9 @@ Please do *not* set this flag if you are not behind a proxy that is setting this
 
 Azure has a slightly different way of signaling encrypted connections. To tell express-sslify to look out for Azure's x-arr-ssl header do the following:
 
-`app.use(enforce.HTTPS({ trustAzureHeader: true }))`
+```javascript
+app.use(enforce.HTTPS({ trustAzureHeader: true }))
+```
 
 Please do *not* set this flag if you are not behind an Azure proxy as this flag can be easily spoofed outside of an Azure environment.
 
@@ -48,11 +52,15 @@ Please do *not* set this flag if you are not behind an Azure proxy as this flag 
 
 If your reverse proxy sends the original host using the `X-Forwarded-Host` header and you need to use that instead of the `Host` header for the redirect, use the `trustXForwardedHostHeader` flag:
 
-`app.use(enforce.HTTPS({ trustXForwardedHostHeader: true }))`
+```javascript
+app.use(enforce.HTTPS({ trustXForwardedHostHeader: true }))
+```
 
 ## Tests
 Download the whole repository and call:
-`$ npm install; npm test`
+```shell
+$ npm install; npm test
+```
 
 ### Credits and License
 express-sslify is licensed under the MIT license. If you'd like to be informed about new projects follow  [@TheSumOfAll](http://twitter.com/TheSumOfAll/).
