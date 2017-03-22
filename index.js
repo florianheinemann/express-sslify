@@ -25,10 +25,9 @@ function applyOptions(options) {
 
 function skip(request, options){
 	//checks the skip list
-	console.log('Request path', request.path)
 	let skipList = options.skips;
 	if(skipList && Array.isArray(skipList)){
-		for(var i = 0; i < skipList.length; i++){
+		for(let i = 0; i < skipList.length; i++){
 			if(request.path.startsWith('/' + skipList[i])){
 				return true;
 			}
