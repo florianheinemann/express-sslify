@@ -56,6 +56,14 @@ If your reverse proxy sends the original host using the `X-Forwarded-Host` heade
 app.use(enforce.HTTPS({ trustXForwardedHostHeader: true }))
 ```
 
+### Exclude Certain Paths from Being Redirected
+
+You can exlude a path that starts with given string by including a list called `skips`:
+
+```javascript
+app.use(enforce.HTTPS({ skips: ['/healthcheck'] }))
+```
+
 ## Tests
 Download the whole repository and call:
 ```shell

@@ -23,6 +23,20 @@ function applyOptions(options) {
 	return settings;
 }
 
+function skip(request, options){
+	//checks the skip list
+	console.log('Request path', request.path)
+	let skipList = options.skips;
+	if(skipList && Array.isArray(skipList)){
+		for(var i = 0; i < skipList.length; i++){
+			if(request.path.startsWith('/' + skipList[i])){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 /**
  * enforceHTTPS
  *
@@ -53,6 +67,11 @@ var enforceHTTPS = function(options) {
 		// Third, if trustAzureHeader is set, check for Azure's headers
 		// indicating a SSL connection
 		if(!isHttps && options.trustAzureHeader && req.headers["x-arr-ssl"]) {
+			isHttps = true;
+		}
+
+		//checks skips array
+		if(skip(req, options)){
 			isHttps = true;
 		}
 
