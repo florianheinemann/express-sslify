@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "description": "Enforces SSL for node.js express projects",
   "main": "index.js",
+  "types":"index.d.ts",
   "scripts": {
     "test": "grunt test"
   },
